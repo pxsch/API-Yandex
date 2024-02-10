@@ -6,15 +6,16 @@ def get_response(coords, map_scale, mode):
     params = {
         "ll": coords,
         "spn": map_scale,
-        "l": mode
+        "l": mode,
+        "size": "650,400"
     }
 
     response = requests.get(server, params=params)
 
     if not response:
-        return response
+        return False, response
 
-    return response
+    return True, response
 
 
 if __name__ == "__main__":
