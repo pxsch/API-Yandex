@@ -12,7 +12,7 @@ class Window:
         self.map_scale = "0.6,0.6"
         self.mode = "map"
         self.get_image()
-        self.current_image = self.current_image = "map_image/map.png"
+        self.current_image = "map_image/map.png"
 
     def get_image(self):
         map_file = "map_image/map.png"
