@@ -1,18 +1,24 @@
 import pygame
 
-from assets import WINDOW_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, FPS
+from assets import WINDOW_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT
 from request import get_response
-from assets import load_image
+import pygame_gui
 
 
 class Window:
-    def __init__(self, width, height):
+    def __init__(self, width, height, manager):
         self.background_color = (255, 255, 255)
         self.coords = "30.316526,59.9400798"
         self.map_scale = "0.6,0.6"
         self.mode = "map"
         self.get_image()
-        self.current_image = self.current_image = "map_image/map.png"
+        self.current_image = "map_image/map.png"
+        self.manager = manager
+        self.search_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((10, 460), (100, 30)),
+            text="Поиск",
+            manager=self.manager,
+        )
 
     def get_image(self):
         map_file = "map_image/map.png"
@@ -23,16 +29,25 @@ class Window:
             with open(map_file, "wb") as file:
                 file.write(response.content)
 
-    def render(self, screen):
+    def render(self, screen, time_delta):
+        self.manager.update(time_delta)
         screen.fill(self.background_color)
         screen.blit(pygame.image.load(self.current_image), (0, 0))
 
         # font = pygame.font.Font(None, 24)
         # text = font.render(f"текущий уровень:", 1, (0, 0, 0))
         # screen.blit(text, (20, 20))
+        self.manager.draw_ui(screen)
 
     def events_processing(self, event):
-        pass
+        if event.type == pygame.USEREVENT:
+            if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == self.search_button:
+                    self.searching()
+                    # self.get_image()
+
+    def searching(self):
+        print("searching")
 
 
 if __name__ == "__main__":
