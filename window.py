@@ -1,23 +1,31 @@
 import pygame
 
 from assets import WINDOW_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT
-from request import get_response
+from request import get_response, geocoder_request
 import pygame_gui
 
 
 class Window:
     def __init__(self, width, height, manager):
         self.background_color = (255, 255, 255)
+
         self.coords = "30.316526,59.9400798"
         self.map_scale = "0.6,0.6"
         self.mode = "map"
         self.get_image()
         self.current_image = "map_image/map.png"
+        self.request_message = None
+
+        # pygame_gui settings
         self.manager = manager
         self.search_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect((10, 460), (100, 30)),
             text="Поиск",
             manager=self.manager,
+        )
+        self.request_line = pygame_gui.elements.UITextEntryLine(
+            relative_rect=pygame.Rect((130, 460), (300, 30)),
+            manager=self.manager
         )
 
     def get_image(self):
@@ -41,13 +49,20 @@ class Window:
 
     def events_processing(self, event):
         if event.type == pygame.USEREVENT:
+            if event.user_type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
+                self.request_message = event.text
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.search_button:
                     self.searching()
-                    # self.get_image()
+                    self.get_image()
 
     def searching(self):
-        print("searching")
+        if self.request_message:
+            is_succes, coords = geocoder_request(self.request_message)
+            if not is_succes:
+                print("GEOCODER ERROR")
+            else:
+                self.coords = f"{coords.split(' ')[0]},{coords.split(' ')[1]}"
 
 
 if __name__ == "__main__":
