@@ -32,8 +32,13 @@ class Window:
         # screen.blit(text, (20, 20))
 
     def events_processing(self, event):
-        pass
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_PAGEUP and float(self.map_scale.split(",")[0]) > 0.002:
+            self.map_scale = f"{str(float(self.map_scale.split(",")[0]) - 0.05)},{str(float(self.map_scale.split(",")[1]) - 0.05)}"
+            self.get_image()
 
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_PAGEDOWN and float(self.map_scale.split(",")[0]) < 80:
+            self.map_scale = f"{str(float(self.map_scale.split(",")[0]) + 0.05)},{str(float(self.map_scale.split(",")[1]) + 0.05)}"
+            self.get_image()
 
 if __name__ == "__main__":
     pygame.init()
