@@ -28,6 +28,11 @@ class Window:
             relative_rect=pygame.Rect((130, 460), (300, 30)),
             manager=self.manager
         )
+        self.reset_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((450, 460), (100, 30)),
+            text="Сброс",
+            manager=self.manager,
+        )
 
     def get_image(self):
         map_file = "map_image/map.png"
@@ -55,6 +60,9 @@ class Window:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.search_button:
                     self.searching()
+                    self.get_image()
+                if event.ui_element == self.reset_button:
+                    self.point_coords = False
                     self.get_image()
 
     def searching(self):
