@@ -1,4 +1,5 @@
 import pygame
+import requests
 
 from assets import WINDOW_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT
 from request import get_response, geocoder_request
@@ -33,6 +34,12 @@ class Window:
             relative_rect=pygame.Rect((450, 460), (100, 30)),
             text="Сброс",
             manager=self.manager,
+        )
+        self.output = pygame_gui.elements.UITextBox(
+            html_text="",
+            relative_rect=pygame.Rect((0, 410), (500, 50)),
+            manager=self.manager,
+            wrap_to_height=True
         )
 
     def get_image(self):
@@ -73,6 +80,7 @@ class Window:
                     self.get_image()
                 if event.ui_element == self.reset_button:
                     self.point_coords = False
+                    self.addrress_output(kill=True)
                     self.get_image()
 
     def searching(self):
@@ -83,3 +91,25 @@ class Window:
             else:
                 self.coords = f"{coords.split(' ')[0]},{coords.split(' ')[1]}"
                 self.point_coords = self.coords
+                self.addrress_output()
+
+    def addrress_output(self, kill=False):
+        geocoder_request = f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b"\
+                           f"&geocode={self.request_message}&format=json"
+
+        response = requests.get(geocoder_request)
+        if response:
+            json_response = response.json()
+
+            toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+            toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["text"]
+
+            self.output.append_html_text(toponym_address)
+
+            if kill:
+                self.output.clear()
+
+        else:
+            print("Ошибка выполнения запроса:")
+            print(geocoder_request)
+            print("Http статус:", response.status_code, "(", response.reason, ")")
