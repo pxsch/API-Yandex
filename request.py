@@ -1,7 +1,7 @@
 import requests
 
 
-def get_response(coords, map_scale, mode):
+def get_response(coords, map_scale, mode, point_coords):
     server = "http://static-maps.yandex.ru/1.x/"
     params = {
         "ll": coords,
@@ -9,6 +9,9 @@ def get_response(coords, map_scale, mode):
         "l": mode,
         "size": "650,400"
     }
+
+    if point_coords:
+        params["pt"] = f"{point_coords},pm2lbm"
 
     response = requests.get(server, params=params)
 

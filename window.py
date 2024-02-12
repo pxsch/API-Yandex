@@ -12,6 +12,7 @@ class Window:
         self.coords = "30.316526,59.9400798"
         self.map_scale = "0.6,0.6"
         self.mode = "map"
+        self.point_coords = None
         self.get_image()
         self.current_image = "map_image/map.png"
         self.request_message = None
@@ -30,7 +31,7 @@ class Window:
 
     def get_image(self):
         map_file = "map_image/map.png"
-        is_succes, response = get_response(self.coords, self.map_scale, self.mode)
+        is_succes, response = get_response(self.coords, self.map_scale, self.mode, self.point_coords)
         if not is_succes:
             print("Http статус:", response.status_code, "(", response.reason, ")")
         else:
@@ -63,20 +64,4 @@ class Window:
                 print("GEOCODER ERROR")
             else:
                 self.coords = f"{coords.split(' ')[0]},{coords.split(' ')[1]}"
-
-
-if __name__ == "__main__":
-    pygame.init()
-    screen = pygame.display.set_mode(WINDOW_SIZE)
-    window = Window(WINDOW_WIDTH, WINDOW_HEIGHT)
-
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            window.events_processing(event)
-
-        window.render(screen)
-        pygame.display.flip()
-    pygame.quit()
+                self.point_coords = self.coords
