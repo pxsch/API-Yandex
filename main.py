@@ -2,8 +2,6 @@ import pygame
 import pygame_gui
 
 from window import Window
-
-
 from assets import WINDOW_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT
 
 

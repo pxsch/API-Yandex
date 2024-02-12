@@ -83,14 +83,3 @@ class Window:
             else:
                 self.coords = f"{coords.split(' ')[0]},{coords.split(' ')[1]}"
                 self.point_coords = self.coords
-
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            window.events_processing(event)
-
-        window.render(screen)
-        pygame.display.flip()
-    pygame.quit()
