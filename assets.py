@@ -5,7 +5,7 @@ import pygame
 
 
 FPS = 60
-WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 600, 500
+WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 1050, 400
 
 
 def load_image(name, colorkey=None):

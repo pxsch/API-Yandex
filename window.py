@@ -18,28 +18,34 @@ class Window:
         self.current_image = "map_image/map.png"
         self.current_image = "map_image/map.png"
         self.request_message = None
+        self.include_postal_code = False
 
         # pygame_gui settings
         self.manager = manager
         self.search_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((10, 460), (100, 30)),
+            relative_rect=pygame.Rect((50, 50), (100, 30)),
             text="Поиск",
             manager=self.manager,
         )
         self.request_line = pygame_gui.elements.UITextEntryLine(
-            relative_rect=pygame.Rect((130, 460), (300, 30)),
+            relative_rect=pygame.Rect((0, 10), (400, 30)),
             manager=self.manager
         )
         self.reset_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((450, 460), (100, 30)),
+            relative_rect=pygame.Rect((250, 50), (100, 30)),
             text="Сброс",
             manager=self.manager,
         )
         self.output = pygame_gui.elements.UITextBox(
             html_text="",
-            relative_rect=pygame.Rect((0, 410), (500, 50)),
+            relative_rect=pygame.Rect((0, 130), (400, 80)),
             manager=self.manager,
-            wrap_to_height=True
+        )
+        self.postal_code = pygame_gui.elements.UIDropDownMenu(
+            options_list=["ВКЛЮЧИТЬ отображение почтового индекса", "ВЫКЛЮЧИТЬ отображение почтового индекса"],
+            starting_option="ВЫКЛЮЧИТЬ отображение почтового индекса",
+            relative_rect=pygame.Rect((0, 220), (400, 30)),
+            manager=self.manager
         )
 
     def get_image(self):
@@ -54,7 +60,7 @@ class Window:
     def render(self, screen, time_delta):
         self.manager.update(time_delta)
         screen.fill(self.background_color)
-        screen.blit(pygame.image.load(self.current_image), (0, 0))
+        screen.blit(pygame.image.load(self.current_image), (400, 0))
 
         # font = pygame.font.Font(None, 24)
         # text = font.render(f"текущий уровень:", 1, (0, 0, 0))
@@ -82,6 +88,12 @@ class Window:
                     self.point_coords = False
                     self.addrress_output(kill=True)
                     self.get_image()
+            if event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
+                if self.postal_code.selected_option.split()[0] == "ВКЛЮЧИТЬ":
+                    self.include_postal_code = True
+                else:
+                    self.include_postal_code = False
+                #self.addrress_output(self.include_postal_code)
 
     def searching(self):
         if self.request_message:
@@ -91,9 +103,9 @@ class Window:
             else:
                 self.coords = f"{coords.split(' ')[0]},{coords.split(' ')[1]}"
                 self.point_coords = self.coords
-                self.addrress_output()
+                self.addrress_output(self.include_postal_code)
 
-    def addrress_output(self, kill=False):
+    def addrress_output(self, include_postal_code=False, kill=False):
         geocoder_request = f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b"\
                            f"&geocode={self.request_message}&format=json"
 
@@ -105,6 +117,11 @@ class Window:
             toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["text"]
 
             self.output.append_html_text(toponym_address)
+
+            if include_postal_code:
+                self.output.clear()
+                toponym_postal_code = toponym["metaDataProperty"]["GeocoderMetaData"]["Address"]["postal_code"]
+                self.output.append_html_text(f'{toponym_address}, {toponym_postal_code}')
 
             if kill:
                 self.output.clear()
