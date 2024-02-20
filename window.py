@@ -10,7 +10,10 @@ class Window:
     def __init__(self, width, height, manager):
         self.background_color = (255, 255, 255)
 
-        self.coords = "30.316526,59.9400798"
+        self.move_right = 0.000000
+        self.move_left = 0.000000
+
+        self.coords = ["30.316526","59.9400798"]
         self.map_scale = "0.6,0.6"
         self.mode = "map"
         self.point_coords = None
@@ -44,7 +47,7 @@ class Window:
 
     def get_image(self):
         map_file = "map_image/map.png"
-        is_succes, response = get_response(self.coords, self.map_scale, self.mode, self.point_coords)
+        is_succes, response = get_response(",".join(self.coords), self.map_scale, self.mode, self.point_coords)
         if not is_succes:
             print("Http статус:", response.status_code, "(", response.reason, ")")
         else:
@@ -69,6 +72,15 @@ class Window:
             if event.key == pygame.K_PAGEDOWN and float(self.map_scale.split(",")[0]) < 20:
                 self.map_scale = (f"{str(float(self.map_scale.split(',')[0]) / 0.5)},"
                                   f"{str(float(self.map_scale.split(',')[1]) / 0.5)}")
+            if event.key == pygame.K_RIGHT:
+                self.coords[0] = str(float(self.coords[0]) + 0.1)
+            if event.key == pygame.K_LEFT:
+                self.coords[0] = str(float(self.coords[0]) - 0.1)
+            if event.key == pygame.K_UP:
+                self.coords[1] = str(float(self.coords[1]) + 0.1)
+            if event.key == pygame.K_DOWN:
+                self.coords[1] = str(float(self.coords[1]) - 0.1)       
+            
             self.get_image()
 
         if event.type == pygame.USEREVENT:
