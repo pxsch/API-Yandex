@@ -73,13 +73,13 @@ class Window:
                 self.map_scale = (f"{str(float(self.map_scale.split(',')[0]) / 0.5)},"
                                   f"{str(float(self.map_scale.split(',')[1]) / 0.5)}")
             if event.key == pygame.K_RIGHT:
-                self.coords[0] = str(float(self.coords[0]) + 0.1)
+                self.coords[0] = str(float(self.coords[0]) + 0.1 * float(self.map_scale.split(',')[0]))
             if event.key == pygame.K_LEFT:
-                self.coords[0] = str(float(self.coords[0]) - 0.1)
+                self.coords[0] = str(float(self.coords[0]) - 0.1 * float(self.map_scale.split(',')[0]))
             if event.key == pygame.K_UP:
-                self.coords[1] = str(float(self.coords[1]) + 0.1)
+                self.coords[1] = str(float(self.coords[1]) + 0.1 * float(self.map_scale.split(',')[0]))
             if event.key == pygame.K_DOWN:
-                self.coords[1] = str(float(self.coords[1]) - 0.1)       
+                self.coords[1] = str(float(self.coords[1]) - 0.1 * float(self.map_scale.split(',')[0]))
             
             self.get_image()
 
