@@ -82,6 +82,7 @@ class Window:
                 self.request_message = event.text
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.search_button:
+                    self.output.clear()
                     self.searching()
                     self.get_image()
                 if event.ui_element == self.reset_button:
