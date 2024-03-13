@@ -14,7 +14,9 @@ class Window:
         self.move_left = 0.000000
 
         self.coords = ["30.316526","59.9400798"]
+        self.past_coords = self.coords.copy()
         self.map_scale = "0.6,0.6"
+        self.end_map = False
         self.mode = "map"
         self.point_coords = None
         self.get_image()
@@ -50,10 +52,13 @@ class Window:
         is_succes, response = get_response(",".join(self.coords), self.map_scale, self.mode, self.point_coords)
         if not is_succes:
             print("Http статус:", response.status_code, "(", response.reason, ")")
+            print(f"Past   {self.past_coords}")
+            self.coords = self.past_coords.copy()
         else:
+            self.past_coords = self.coords
             with open(map_file, "wb") as file:
                 file.write(response.content)
-
+            print(f"Past1:    {self.past_coords}")
     def render(self, screen, time_delta):
         self.manager.update(time_delta)
         screen.fill(self.background_color)
@@ -66,10 +71,11 @@ class Window:
 
     def events_processing(self, event):
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_PAGEUP and float(self.map_scale.split(",")[0]) > 0.002:
+            if event.key == pygame.K_w and float(self.map_scale.split(",")[0]) > 0.002:
                 self.map_scale = (f"{str(float(self.map_scale.split(',')[0]) * 0.5)},"
                                   f"{str(float(self.map_scale.split(',')[1]) * 0.5)}")
-            if event.key == pygame.K_PAGEDOWN and float(self.map_scale.split(",")[0]) < 20:
+                print(True)
+            if event.key == pygame.K_s and float(self.map_scale.split(",")[0]) < 20:
                 self.map_scale = (f"{str(float(self.map_scale.split(',')[0]) / 0.5)},"
                                   f"{str(float(self.map_scale.split(',')[1]) / 0.5)}")
             if event.key == pygame.K_RIGHT:
