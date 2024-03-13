@@ -52,13 +52,11 @@ class Window:
         is_succes, response = get_response(",".join(self.coords), self.map_scale, self.mode, self.point_coords)
         if not is_succes:
             print("Http статус:", response.status_code, "(", response.reason, ")")
-            print(f"Past   {self.past_coords}")
             self.coords = self.past_coords.copy()
         else:
-            self.past_coords = self.coords
+            self.past_coords = self.coords.copy()
             with open(map_file, "wb") as file:
                 file.write(response.content)
-            print(f"Past1:    {self.past_coords}")
     def render(self, screen, time_delta):
         self.manager.update(time_delta)
         screen.fill(self.background_color)
